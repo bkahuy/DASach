@@ -39,16 +39,17 @@ public class XLSach implements ISach{
     }
 
     @Override
-    public boolean getSAbyNXBGB(String nhaxb, int giab) {
+    public ResultSet getSAbyNXBGB(String nhaxb, int giab) {
         getcon();
         try {
             PreparedStatement pst = cn.prepareStatement("select * from tbSach where nhaxb = '" + nhaxb + "' and giab = '" + giab +"'");
-            int res = pst.executeUpdate();
-            return res>0;
+            
+            return pst.executeQuery();
         } catch (SQLException e) {
             System.out.println("getSAbyNXHGB failed " + e.getMessage());
-            return false;
+            return null;
         }    
+        
     }
     
 }

@@ -11,5 +11,5 @@ import java.sql.*;
 public interface ISach {
     public void getcon();
     public ResultSet getSA();
-    public boolean getSAbyNXBGB(String nhaxb, int giab);
+    public ResultSet getSAbyNXBGB(String nhaxb, int giab);
 }

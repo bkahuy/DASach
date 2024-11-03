@@ -4,6 +4,8 @@
  */
 package GSach;
 
+import GSach.Sach;
+import GSach.XLSach;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.*;
@@ -13,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -69,16 +73,32 @@ public class Gui_findSA extends JFrame implements MouseListener, ActionListener{
         gbc.gridy = 4;
         btntim = new JButton("tim kiem");
         btntim.addActionListener((e) -> {
+            try {
             String nhaxb = cbnhaxb.getSelectedItem().toString();
             int giab = Integer.parseInt(tfgiab.getText().trim());
             XLSach xl = new XLSach();
-            boolean res = xl.getSAbyNXBGB(nhaxb, giab);
-            if (res) {
-                loadData(dfmodel);
-                JOptionPane.showMessageDialog(null, "tim kiem thanh cong");
-            }else{
-                JOptionPane.showMessageDialog(null, "khong tim thay");
+            ResultSet res = xl.getSAbyNXBGB(nhaxb, giab);
+            dfmodel.setRowCount(0);
+            if (res != null) {
+                
+                    while(res.next()){
+                        Sach s = new Sach(res.getString("mas"), res.getString("tens"), res.getString("nhaxb"), res.getInt("namxb"), res.getInt("giab"));
+                        int giakm = s.Khuyetmai(s.getNamxb(), s.getGiab());
+                        dfmodel.addRow(new Object[]{
+                            s.getMas(),
+                            s.getTens(),
+                            s.getNhaxb(),
+                            s.getNamxb(),
+                            s.getGiab(),
+                            giakm
+                        });
+                    }
+                
             }
+            dfmodel.fireTableDataChanged();
+            }catch (SQLException ex) {
+                     System.out.println("loadData failed "+ ex.getMessage());
+                 }
         });
         pntrai.add(btntim,gbc);
         
